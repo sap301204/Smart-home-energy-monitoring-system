@@ -1,0 +1,3 @@
+Smart Home Energy Monitoring System
+Problem: Lack of real-time visibility into per-circuit energy usage.
+Objective: Create a non-invasive IoT system using ESP32, SCT013, MQTT, InfluxDB, Grafana, and Home Assistant.

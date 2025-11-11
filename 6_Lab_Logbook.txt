@@ -1,0 +1,5 @@
+Step 1: Setup circuit safely with non-invasive clamp.
+Step 2: Flash ESP32 and test serial output.
+Step 3: Setup MQTT broker, verify JSON payload.
+Step 4: Connect InfluxDB and Grafana, confirm live data.
+Step 5: Validate readings with known load.

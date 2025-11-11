@@ -1,0 +1,70 @@
+# Step-by-Step Implementation Plan (Hardware → Firmware → MQTT Broker → Database → Dashboard → Automation)
+
+## 1️⃣ Hardware Setup
+- Components: ESP32-DevKitC, SCT-013-050 (50A/1V), resistors (10k×2, 100k, 100Ω), capacitors (10µF, 0.1µF), 3.5mm jack.
+- Build mid-bias circuit (≈1.65V) and connect SCT-013 output via 100kΩ resistor to ESP32 ADC pin (GPIO34).
+- Ensure all wiring is low-voltage and non-invasive — clamp must go around a single insulated conductor only.
+
+**ASCII wiring diagram**
+```
+3.3V ---10k---+---10k--- GND
+               |
+               +---10uF---GND
+               |
+             ADC_bias (~1.65V)
+Clamp tip --- 100k --- ADC_pin
+ADC_pin --- 0.1uF --- GND
+Clamp return --- 100R --- GND
+```
+
+## 2️⃣ Firmware Setup
+- Open Arduino IDE → Board: ESP32 Dev Module → Upload `main.cpp`.
+- Edit `mqtt_config.h` for your WiFi credentials and broker IP.
+- After upload, open Serial Monitor @115200 baud to confirm JSON publishes.
+
+## 3️⃣ MQTT Broker Setup (Mosquitto)
+- Run Dockerized Mosquitto broker:
+  ```bash
+  docker run -d --name mosquitto -p 1883:1883 eclipse-mosquitto
+  ```
+- Verify with:
+  ```bash
+  mosquitto_sub -h localhost -t "home/energy/#" -v
+  ```
+
+## 4️⃣ Database Setup (InfluxDB)
+- Run InfluxDB container:
+  ```bash
+  docker run -d -p 8086:8086 influxdb:2.7
+  ```
+- Open `http://localhost:8086`, create org `home`, bucket `energy`, and token.
+- Update token in `server/telegraf/telegraf.conf`.
+
+## 5️⃣ Dashboard Setup (Grafana)
+- Start Grafana container:
+  ```bash
+  docker run -d -p 3000:3000 grafana/grafana
+  ```
+- Log in → Add InfluxDB datasource → import `energy_dashboard.json`.
+- Observe live data graphs for Irms, VA, Wh.
+
+## 6️⃣ Automation Setup (Home Assistant)
+- Add the following to `configuration.yaml`:
+  ```yaml
+  mqtt:
+    sensor:
+      - name: "Circuit 1 Power (VA)"
+        state_topic: "home/energy/node1/c1"
+        value_template: "{{ value_json.apparent_w | float }}"
+        unit_of_measurement: "VA"
+  ```
+- Restart HA → data visible in Energy dashboard.
+- Add automation rule for high standby or load detection.
+
+## 7️⃣ Validation & Testing
+- Use known resistive loads (e.g., 60W bulb).
+- Compute expected I = P/V (≈0.26A).
+- Compare Grafana values; adjust calibration constant in firmware.
+- Ensure data continuity in InfluxDB and alert triggers in Home Assistant.
+
+✅ System Complete!

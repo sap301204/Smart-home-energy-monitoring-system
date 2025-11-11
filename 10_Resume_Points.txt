@@ -1,0 +1,3 @@
+- Designed ESP32-based smart energy monitor using MQTT and Grafana.
+- Built Dockerized IoT stack with Mosquitto, InfluxDB, and Grafana.
+- Implemented real-time analytics and alert automation with Home Assistant.

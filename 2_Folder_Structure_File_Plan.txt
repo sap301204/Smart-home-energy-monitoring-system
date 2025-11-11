@@ -1,0 +1,15 @@
+smart-home-energy-monitor/
+├─ firmware/
+│  └─ esp32_energy_node/
+│      └─ main.cpp
+├─ server/
+│  ├─ docker-compose.yml
+│  ├─ telegraf/telegraf.conf
+│  ├─ grafana/dashboards/energy_dashboard.json
+│  └─ mosquitto/mosquitto.conf
+├─ home_assistant/mqtt_sensors.yaml
+├─ data/sample_readings.csv
+├─ docs/
+│  ├─ lab_logbook.md
+│  └─ demo_script.md
+└─ LICENSE, README.md, .github/workflows/basic-ci.yml

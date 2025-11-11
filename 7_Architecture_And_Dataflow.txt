@@ -1,0 +1,2 @@
+[SCT-013 Clamp] → [ESP32 ADC] → [MQTT Broker] → [InfluxDB] → [Grafana Dashboard]
+                                  ↘ [Home Assistant Automation]

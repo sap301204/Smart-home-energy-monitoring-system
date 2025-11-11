@@ -1,0 +1,4 @@
+1. Power on ESP32, open Serial Monitor.
+2. Observe Irms readings in MQTT topic.
+3. Show Grafana dashboard updating live.
+4. Trigger Home Assistant alert by simulating load.
